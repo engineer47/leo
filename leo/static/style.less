@@ -28,28 +28,8 @@ body {
 	margin: 0; padding: 0;
 }
 
-.flash {
-    padding: 10px;
-    margin: 20px 0;
-    &.error {
-        background: #ffefef;
-        color: #4c1717;
-        border: 1px solid #4c1717;
-    }
-    &.warning {
-        background: #ffe4c1;
-        color: #79420d;
-        border: 1px solid #79420d;
-    }
-    &.notice {
-        background: #efffd7;
-        color: #8ba015;
-        border: 1px solid #8ba015;
-    }
-}
-
 input {
-	width: 179px;
+	width: 236px;
 	height: 38px;
 	border: 1px solid @border-color;
 	padding: 0 10px;
@@ -58,11 +38,6 @@ input {
 	&:focus {
 		background: #FFFDF2;
 	}
-    &.error {
-        background: #ffefef;
-        color: #4c1717;
-        border: 1px solid #4c1717;
-    }
 }
 
 input[type="submit"] {
@@ -135,47 +110,19 @@ header {
 			margin-bottom: 29px;
 			border-radius: 6px;
 			font-size: 14px;
-			&.up {
-				width: 303px;
-				height: 433px;
-				float: none;
-				textarea.ribbitText {
-					width: 249px;
-					height: 160px;
-					border: 1px solid @border-color;
-                    &.error {
-                        border: 1px solid #4C1717;
-                    }
-				}
-			}
-			&.down {
-				width: 303px;
-				height: 433px;
-				float: right;
-				textarea.ribbitText {
-					width: 249px;
-					height: 160px;
-					border: 1px solid @border-color;
-                    &.error {
-                        border: 1px solid #4C1717;
-                    }
-				}
-			}
 			&.right {
 				width: 303px;
-				height: 433px;
+				height: 313px;
 				float: right;
 				textarea.ribbitText {
 					width: 249px;
 					height: 160px;
 					border: 1px solid @border-color;
-                    &.error {
-                        border: 1px solid #4C1717;
-                    }
 				}
 			}
 			&.left {
 				width: @content-width - 327;
+				height: 552px;
 				float: left;
 				div.ribbitWrapper {
 					padding: 15px 0;
@@ -235,14 +182,37 @@ header {
 	}
 }
 
-#sec1 {
-	float: right;
+.second-right {
 	border: 1px solid @border-color;
+	width: 200px;
+	height: 100px;
+	float: right;
 }
 
-#sec2 {
-	float: left;
+.second-left {
 	border: 1px solid @border-color;
+	width: 200px;
+	height: 100px;
+	float: left;
+}
+
+.dashboard {
+	border: 1px solid @border-color;
+	width: 100%;
+	height: 432px;
+	float: left;
+}
+
+.my-notifications {
+	border-bottom: 1px solid @border-color;
+	width: 303px;
+	height: 276px;
+}
+
+.public-notifications {
+	border-bottom: 1px solid @border-color;
+	width: 303px;
+	height: 261px;
 }
 
 footer {
@@ -254,7 +224,6 @@ footer {
 		padding: 15px;
 		img {
 			float: right;
-            margin-right: 5px;
 		}
 	}
 }

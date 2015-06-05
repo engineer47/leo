@@ -4,38 +4,29 @@
         {{ block.super }}
     {% endwith %}
 {% endblock %}
- 
+
 {% block content %}
-    <div id="sec2">
-        <h1>My Notifications</h1>
-        <div class="panel right">
+    <div class="panel right">
+        <div class="my-notifications">
+        First Div
         </div>
-        <h1>Public Notifications</h1>
-        <div class="panel right">
+        <div class="public-notifications">
+        Second Div
         </div>
-        <!--<p>
-            <form action="/submit" method="post">
-            {% for field in ribbit_form %}{% csrf_token %}
-            {{ field }}
-            {% endfor %}
-            <input type="hidden" value="{{ next_url }}" name="next_url">
-            <input type="submit" value="Ribbit!">
-            </form>
-        </p>-->
     </div>
-    <div class="sec1">
-        <h1>Buddies' Ribbits</h1>
-        {% for ribbit in ribbits %}
-        <div class="ribbitWrapper">
-            <a href="/users/{{ ribbit.user.username }}">
-                <img class="avatar" src="{{ ribbit.user.profile.gravatar_url }}">
-                <span class="name">{{ ribbit.user.first_name }}</span>
-            </a>
-            @{{ ribbit.user.username }}
-            <p>
-                {{ ribbit.content }}
-            </p>
+    <div class="panel left">
+        <div class="second-right">
+        	<form action="/submit" method="post">
+            {% csrf_token %}
+            <input type="hidden" value="{{ next_url }}" name="next_url">
+            <input type="submit" value="Submit Sighting!">
+            </form>
         </div>
-        {% endfor %}
+        <div class="second-left">
+        Left Div
+        </div>
+        <div class="dashboard">
+        Dashboard
+        </div>
     </div>
 {% endblock %}
