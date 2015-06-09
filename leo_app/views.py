@@ -48,7 +48,7 @@ def users(request, username="", ribbit_form=None):
                   {'obj': obj, 'next_url': '/users/',
                    'ribbit_form': ribbit_form,
                    'username': request.user.username, })
-    
+
 def index(request, auth_form=None, user_form=None):
     # User is logged in
     if request.user.is_authenticated():
@@ -57,11 +57,18 @@ def index(request, auth_form=None, user_form=None):
         ribbits_self = Ribbit.objects.filter(user=user.id)
         ribbits_buddies = Ribbit.objects.filter(user__userprofile__in=user.profile.follows.all)
         ribbits = ribbits_self | ribbits_buddies
- 
+
+        if request.POST.get('sighting'):
+            sighting_type = request.POST.get('sighting')
+        else:
+            sighting_type = '------'
+        print '*********'+str(sighting_type)
         return render(request,
                       'buddies.html',
                       {'ribbit_form': ribbit_form, 'user': user,
                        'ribbits': ribbits,
+                       'sighting_type': sighting_type,
+                       'notifications': [1, 2, 3],
                        'next_url': '/', })
     else:
         # User is not logged in
