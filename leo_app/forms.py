@@ -1,27 +1,30 @@
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.core.files.images import get_image_dimensions
 from django.contrib.auth.models import User
 from django import forms
 from django.utils.html import strip_tags
-from leo_app.models import Ribbit
+from leo_app.models import Ribbit, UserProfile
 
 class UserCreateForm(UserCreationForm):
+    #avatar = forms.ImageField(required=False, widget=forms.widgets.ClearableFileInput(attrs={'placehoder': 'avatar'}))
     email = forms.EmailField(required=True, widget=forms.widgets.TextInput(attrs={'placeholder': 'Email'}))
     first_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={'placeholder': 'First Name'}))
     last_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={'placeholder': 'Last Name'}))
+    mobile = forms.CharField(required=False, widget=forms.widgets.TextInput(attrs={'placeholder': 'mobile number'}))
     username = forms.CharField(widget=forms.widgets.TextInput(attrs={'placeholder': 'Username'}))
     password1 = forms.CharField(widget=forms.widgets.PasswordInput(attrs={'placeholder': 'Password'}))
     password2 = forms.CharField(widget=forms.widgets.PasswordInput(attrs={'placeholder': 'Password Confirmation'}))
- 
+
     def is_valid(self):
         form = super(UserCreateForm, self).is_valid()
         for f, error in self.errors.iteritems():
             if f != '__all_':
                 self.fields[f].widget.attrs.update({'class': 'error', 'value': strip_tags(error)})
         return form
- 
+
     class Meta:
         fields = ['email', 'username', 'first_name', 'last_name', 'password1',
-                  'password2']
+                  'password2', 'mobile']
         model = User
 
 class AuthenticateForm(AuthenticationForm):
@@ -35,9 +38,58 @@ class AuthenticateForm(AuthenticationForm):
                 self.fields[f].widget.attrs.update({'class': 'error', 'value': strip_tags(error)})
         return form
 
+
+class UserProfileForm(forms.ModelForm):
+    email = forms.EmailField(required=True, widget=forms.widgets.TextInput(attrs={'placeholder': 'Email'}))
+    first_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={'placeholder': 'First Name'}))
+    last_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={'placeholder': 'Last Name'}))
+    #mobile = forms.CharField(required=False, widget=forms.widgets.TextInput(attrs={'placeholder': 'mobile number'}))
+    username = forms.CharField(widget=forms.widgets.TextInput(attrs={'placeholder': 'Username'}))
+#     password1 = forms.CharField(widget=forms.widgets.PasswordInput(attrs={'placeholder': 'Password'}))
+#     password2 = forms.CharField(widget=forms.widgets.PasswordInput(attrs={'placeholder': 'Password Confirmation'}))
+
+    def clean_avatar(self):
+        avatar = self.cleaned_data['avatar']
+
+        try:
+            w, h = get_image_dimensions(avatar)
+
+            #validate dimensions
+            max_width = max_height = 100
+            if w > max_width or h > max_height:
+                raise forms.ValidationError(
+                    u'Please use an image that is '
+                     '%s x %s pixels or smaller.' % (max_width, max_height))
+
+            #validate content type
+            main, sub = avatar.content_type.split('/')
+            if not (main == 'image' and sub in ['jpeg', 'pjpeg', 'gif', 'png']):
+                raise forms.ValidationError(u'Please use a JPEG, '
+                    'GIF or PNG image.')
+
+            #validate file size
+            if len(avatar) > (20 * 1024):
+                raise forms.ValidationError(
+                    u'Avatar file size may not exceed 20k.')
+
+        except AttributeError:
+            """
+            Handles case when we are updating the user profile
+            and do not supply a new avatar
+            """
+            pass
+
+        return avatar
+
+    class Meta:
+        fields = ['email', 'username', 'first_name', 'last_name']
+        profile_fields = []
+        model = UserProfile
+
+
 class LeoForm(forms.ModelForm):
     content = forms.CharField(required=True, widget=forms.widgets.Textarea(attrs={'class': 'ribbitText'}))
- 
+    
     def is_valid(self):
         form = super(LeoForm, self).is_valid()
         for f in self.errors.iterkeys():

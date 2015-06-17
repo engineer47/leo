@@ -11,7 +11,8 @@ class Ribbit(models.Model):
  
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
-    follows = models.ManyToManyField('self', related_name='followed_by', symmetrical=False)
+    #mobile = models.CharField(max_length=7)
+    #follows = models.ManyToManyField('self', related_name='followed_by', symmetrical=False)
  
     def gravatar_url(self):
         return "http://www.gravatar.com/avatar/%s?s=50" % hashlib.md5(self.user.email).hexdigest()

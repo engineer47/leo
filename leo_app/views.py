@@ -4,9 +4,10 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.db.models import Count
+from django.http import HttpResponseRedirect
 from django.http import Http404
-from leo_app.forms import AuthenticateForm, UserCreateForm, LeoForm
-from leo_app.models import Ribbit
+from leo_app.forms import AuthenticateForm, UserCreateForm, LeoForm, UserProfileForm
+from leo_app.models import Ribbit, UserProfile
 
 def get_latest(user):
     try:
@@ -49,27 +50,65 @@ def users(request, username="", ribbit_form=None):
                    'ribbit_form': ribbit_form,
                    'username': request.user.username, })
 
+@login_required
+def user_profile(request, username=None):
+    vehicles = [1,2,3,4]
+    if request.method == 'POST':
+        # create a form instance and populate it with data from the request:
+        form = UserProfileForm(request.POST)
+        # check whether it's valid:
+        if form.is_valid():
+            # process the data in form.cleaned_data as required
+            # ...
+            # redirect to a new URL:
+            updated_user_values = {}
+            updated_profile_values = {}
+            for fld in UserProfileForm.Meta.fields:
+                updated_user_values[fld] = form.cleaned_data.get(fld)
+            for fld in UserProfileForm.Meta.profile_fields:
+                updated_profile_values[fld] = form.cleaned_data.get(fld)
+            User.objects.filter(id=request.user.id).update(**updated_user_values)
+            UserProfile.objects.filter(user=request.user).update(**updated_profile_values)
+            return HttpResponseRedirect('/user_profile/{}/'.format(form.cleaned_data.get('username')))
+
+    # if a GET (or any other method) we'll create a blank form
+    else:
+        #user = request.GET.get('username')
+        print request.GET
+        user_profile = UserProfile.objects.get(user__username=username)
+        form_values = {}
+        for fld in UserProfileForm.Meta.fields:
+            form_values[fld] = user_profile.user.__dict__[fld]
+        form = UserProfileForm(form_values)
+
+    return render(request, 
+                  'profiles.html', 
+                  {'form': form,
+                   'vehicles': vehicles,
+                   'username': request.user.username, })
+
 def index(request, auth_form=None, user_form=None):
     # User is logged in
     if request.user.is_authenticated():
         ribbit_form = LeoForm()
         user = request.user
         ribbits_self = Ribbit.objects.filter(user=user.id)
-        ribbits_buddies = Ribbit.objects.filter(user__userprofile__in=user.profile.follows.all)
-        ribbits = ribbits_self | ribbits_buddies
+        #ribbits_buddies = Ribbit.objects.filter(user__userprofile__in=user.profile.follows.all)
+        #ribbits = ribbits_self | ribbits_buddies
 
         if request.POST.get('sighting'):
             sighting_type = request.POST.get('sighting')
         else:
             sighting_type = '------'
-        print '*********'+str(sighting_type)
         return render(request,
                       'buddies.html',
                       {'ribbit_form': ribbit_form, 'user': user,
-                       'ribbits': ribbits,
+                       #'ribbits': ribbits,
                        'sighting_type': sighting_type,
                        'notifications': [1, 2, 3],
-                       'next_url': '/', })
+                       'public_notifications': [1, 2, 3],
+                       'next_url': '/',
+                       'username': request.user.username,  })
     else:
         # User is not logged in
         auth_form = auth_form or AuthenticateForm()

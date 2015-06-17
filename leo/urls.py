@@ -10,6 +10,8 @@ urlpatterns = patterns('',
     url(r'^submit$', 'leo_app.views.submit'), # submit new ribbit
     url(r'^users/$', 'leo_app.views.users'),
     url(r'^users/(?P<username>\w{0,30})/$', 'leo_app.views.users'),
+    url(r'^user_profile/(?P<username>\w{0,30})/$', 'leo_app.views.user_profile'),
+    url(r'^user_profile/$', 'leo_app.views.user_profile'),
     url(r'^follow$', 'leo_app.views.follow'),
 )
 

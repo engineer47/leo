@@ -1,34 +1,29 @@
 {% extends "base.html" %}
  
 {% block content %}
-    <div class="panel right">
-        <h1>Create a Ribbit</h1>
+    <div class="panel left">
+        <h1>User Profile</h1>
         <p>
-            <form action="/submit" method="post">
-            {% for field in ribbit_form %}{% csrf_token %}
-            {{ field }}
-            {% endfor %}
-            <input type="hidden" value="{{ next_url }}" name="next_url">
-            <input type="submit" value="Ribbit!">
+            <form action="/user_profile/" method="post">
+            {% csrf_token %}
+            <tr>
+				{{form}}
+			</tr>
+			<tr>
+            	<input type="submit" value="Save">
+            </tr>
             </form>
         </p>
     </div>
-    <div class="panel left">
-        <h1>Public Profiles</h1>
-        {% for user, ribbit in obj %}
-        <div class="ribbitWrapper">
-            <a href="/users/{{ user.username }}">
-                <img class="avatar" src="{{ user.profile.gravatar_url }}">
-                <span class="name">{{ user.first_name }}</span>
-            </a>
-            @{{ user.username }}
-            <p>
-                {{ user.ribbit_count}} Ribbits
-                <span class="spacing">{{ user.profile.followed_by.count }} Followers</span>
-                <span class="spacing">{{ user.profile.follows.count }} Following</span>
-            </p>
-            <p>{{ ribbit.content }}</p>
-        </div>
-        {% endfor %}
+	<div class="panel right">
+        <h1>My Vehicles</h1>
+        <div class="my-notifications">
+        	{% for veh in vehicles %}
+	    	    <div class="timeline-item">
+			        <div class="year">Audi A4<span class="marker"><span class="dot"></span></span></div>
+			        <div class="info"><a href="link">2008 1.8T, Blue</a></div>
+			    </div>
+			{% endfor %}
+        </div>  
     </div>
 {% endblock %}
