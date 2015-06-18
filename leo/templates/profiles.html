@@ -15,15 +15,49 @@
             </form>
         </p>
     </div>
-	<div class="panel right">
+	<div class="panel right" id="vehicles_div">
         <h1>My Vehicles</h1>
+        <div class="vehicles">
+        	<select id="add_car" name="add_car" onchange="addCar()">
+        		{% for car in vehicles %}
+		           <option value={{car.model}}>{{car.model}}</option>
+		        {% endfor %}
+		    </select>
+        </div>
         <div class="my-notifications">
-        	{% for veh in vehicles %}
-	    	    <div class="timeline-item">
-			        <div class="year">Audi A4<span class="marker"><span class="dot"></span></span></div>
-			        <div class="info"><a href="link">2008 1.8T, Blue</a></div>
-			    </div>
-			{% endfor %}
+        	<table id="add_car_table">
+	        	{% for veh in my_vehicles %}
+		    	    <tr>
+		    	    	<input type="text" value="{{veh.model}}" readonly>
+		    	    </tr>
+				{% endfor %}
+			</table>
         </div>  
     </div>
+   	<script>
+   		function addCar()
+		{
+		    var table = document.getElementById('add_car_table');
+	        var rowCount = table.rows.length;
+	        var row = table.insertRow(rowCount);
+	        var added = document.getElementById('add_car');
+	        var sel_val = added.options[added.selectedIndex].value;
+	        var input = table.getElementsByTagName('input'); 
+	        for ( var z = 0; z < input.length; z++ ) { 
+	        	if (input[z].value == sel_val){
+	        		alert(sel_val+' is already added!');
+	        		return false;
+	        	}
+		    } 
+	       	row.innerHTML = row.innerHTML +' <input type="text" id="car-1" name="car-1" value='+sel_val+' readonly/>'+' <label for="car-1"><a href="javascript:;" onclick="removeCar(this);">remove</a></label>'
+		}
+   		
+   		function removeCar(label)
+		{	
+			var table = document.getElementById('add_car_table');
+	        var parentRow = label.parentElement;
+	        var rowIndex = parentRow.parentNode.rowIndex;
+	        table.deleteRow(rowIndex);
+		}
+   	</script>
 {% endblock %}

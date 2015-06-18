@@ -7,7 +7,7 @@ from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.http import Http404
 from leo_app.forms import AuthenticateForm, UserCreateForm, LeoForm, UserProfileForm
-from leo_app.models import Ribbit, UserProfile
+from leo_app.models import Ribbit, UserProfile, Vehicle
 
 def get_latest(user):
     try:
@@ -52,7 +52,6 @@ def users(request, username="", ribbit_form=None):
 
 @login_required
 def user_profile(request, username=None):
-    vehicles = [1,2,3,4]
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = UserProfileForm(request.POST)
@@ -79,14 +78,29 @@ def user_profile(request, username=None):
         form_values = {}
         for fld in UserProfileForm.Meta.fields:
             form_values[fld] = user_profile.user.__dict__[fld]
+        for fld in UserProfileForm.Meta.profile_fields:
+            form_values[fld] = user_profile.__dict__[fld]
         form = UserProfileForm(form_values)
 
     return render(request, 
                   'profiles.html', 
                   {'form': form,
-                   'vehicles': vehicles,
+                   'vehicles': Vehicle.objects.all().exclude(owner=request.user),
+                   'my_vehicles': Vehicle.objects.filter(owner=request.user),
                    'username': request.user.username, })
 
+@login_required
+def vehicle_owner(request):
+    if request.method == 'POST':
+        user_name = request.POST.get('user_vehicles')
+        reg = request.POST.get('add_car')
+    return render(request, 
+                  'profiles.html', 
+                  {'form': form,
+                   'vehicles': Vehicle.objects.all().exclude(owner=request.user),
+                   'my_vehicles': Vehicle.objects.filter(owner=request.user),
+                   'username': request.user.username, })
+    
 def index(request, auth_form=None, user_form=None):
     # User is logged in
     if request.user.is_authenticated():
@@ -144,6 +158,11 @@ def signup(request):
             user_form.save()
             user = authenticate(username=username, password=password)
             login(request, user)
+            form_values = {}
+            for fld in UserCreateForm.Meta.profile_fields:
+                form_values[fld] = user_form.cleaned_data[fld]
+            form_values['user'] = user
+            UserProfile.objects.create(**form_values)
             return redirect('/')
         else:
             return index(request, user_form=user_form)

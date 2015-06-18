@@ -24,7 +24,8 @@ class UserCreateForm(UserCreationForm):
 
     class Meta:
         fields = ['email', 'username', 'first_name', 'last_name', 'password1',
-                  'password2', 'mobile']
+                  'password2']
+        profile_fields = ['mobile']
         model = User
 
 class AuthenticateForm(AuthenticationForm):
@@ -43,7 +44,7 @@ class UserProfileForm(forms.ModelForm):
     email = forms.EmailField(required=True, widget=forms.widgets.TextInput(attrs={'placeholder': 'Email'}))
     first_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={'placeholder': 'First Name'}))
     last_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={'placeholder': 'Last Name'}))
-    #mobile = forms.CharField(required=False, widget=forms.widgets.TextInput(attrs={'placeholder': 'mobile number'}))
+    mobile = forms.CharField(required=False, widget=forms.widgets.TextInput(attrs={'placeholder': 'mobile number'}))
     username = forms.CharField(widget=forms.widgets.TextInput(attrs={'placeholder': 'Username'}))
 #     password1 = forms.CharField(widget=forms.widgets.PasswordInput(attrs={'placeholder': 'Password'}))
 #     password2 = forms.CharField(widget=forms.widgets.PasswordInput(attrs={'placeholder': 'Password Confirmation'}))
@@ -83,7 +84,7 @@ class UserProfileForm(forms.ModelForm):
 
     class Meta:
         fields = ['email', 'username', 'first_name', 'last_name']
-        profile_fields = []
+        profile_fields = ['mobile']
         model = UserProfile
 
 
