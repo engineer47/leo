@@ -57,9 +57,7 @@ def user_profile(request, username=None):
         form = UserProfileForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
-            # process the data in form.cleaned_data as required
-            # ...
-            # redirect to a new URL:
+            user_profile = UserProfile.objects.get(user=request.user)
             updated_user_values = {}
             updated_profile_values = {}
             for fld in UserProfileForm.Meta.fields:
@@ -68,9 +66,16 @@ def user_profile(request, username=None):
                 updated_profile_values[fld] = form.cleaned_data.get(fld)
             User.objects.filter(id=request.user.id).update(**updated_user_values)
             UserProfile.objects.filter(user=request.user).update(**updated_profile_values)
+            # TODO: search cars by registration not model name.
+            updated_vehicles = []
+            for key, value in request.POST.iteritems():
+                if key.find('car') != -1:
+                    updated_vehicles.append(value)
+            # release all vehicles previously attached to this profile
+            Vehicle.objects.filter(owner=user_profile).update(owner=None)
+            # attach the updated list of vehicles to this profile
+            Vehicle.objects.filter(model__in=updated_vehicles).update(owner=user_profile)
             return HttpResponseRedirect('/user_profile/{}/'.format(form.cleaned_data.get('username')))
-
-    # if a GET (or any other method) we'll create a blank form
     else:
         #user = request.GET.get('username')
         print request.GET
@@ -85,8 +90,8 @@ def user_profile(request, username=None):
     return render(request, 
                   'profiles.html', 
                   {'form': form,
-                   'vehicles': Vehicle.objects.all().exclude(owner=request.user),
-                   'my_vehicles': Vehicle.objects.filter(owner=request.user),
+                   'vehicles': Vehicle.objects.all(),
+                   'my_vehicles': Vehicle.objects.filter(owner=user_profile),
                    'username': request.user.username, })
 
 @login_required

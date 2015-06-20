@@ -18,3 +18,21 @@ urlpatterns = patterns('',
 urlpatterns += patterns('django.contrib.staticfiles.views',
         url(r'^static/(?P<path>.*)$', 'serve'),
     )
+
+# pos_year_1 = SubjectReferral.objects.filter(hiv_result='POS',subject_visit__appointment__visit_definition__code='T0', subject_visit__household_member__household_structure__household__plot__community__in=['digawana', 'ranaka', 'molapowabojang', 'otse'])
+# pos_year_1 = pos_year_1.order_by('subject_visit__household_member__household_structure__household__plot__community')
+# new_pos_year_2=[]
+# count = 0
+# for ref in pos_year_1:
+#     try:
+#         subject_ref = SubjectReferral.objects.get(subject_identifier=ref.subject_identifier, new_pos=True, subject_visit__appointment__visit_definition__code='T1')
+#         new_pos_year_2.append(subject_ref)
+#     except:
+#         pass
+#     count = count + 1
+#     print count
+# 
+# f = open('/home/django/incorrect_new_pos.txt','w')
+# 
+# for entry in new_pos_year_2:
+#     f.write('{},{},{},{},{},\n'.format(entry.subject_identifier, entry.hiv_result, entry.referral_code, entry.new_pos, entry.subject_visit.household_member.household_structure.household.plot.community))

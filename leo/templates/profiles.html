@@ -1,63 +1,87 @@
 {% extends "base.html" %}
  
 {% block content %}
-    <div class="panel left">
-        <h1>User Profile</h1>
-        <p>
-            <form action="/user_profile/" method="post">
-            {% csrf_token %}
-            <tr>
-				{{form}}
-			</tr>
-			<tr>
-            	<input type="submit" value="Save">
-            </tr>
-            </form>
-        </p>
-    </div>
-	<div class="panel right" id="vehicles_div">
-        <h1>My Vehicles</h1>
-        <div class="vehicles">
-        	<select id="add_car" name="add_car" onchange="addCar()">
-        		{% for car in vehicles %}
-		           <option value={{car.model}}>{{car.model}}</option>
-		        {% endfor %}
-		    </select>
-        </div>
-        <div class="my-notifications">
-        	<table id="add_car_table">
-	        	{% for veh in my_vehicles %}
-		    	    <tr>
-		    	    	<input type="text" value="{{veh.model}}" readonly>
-		    	    </tr>
-				{% endfor %}
-			</table>
-        </div>  
-    </div>
+	<form action="/user_profile/" method="post">
+     	{% csrf_token %}
+	    <div class="panel left">
+	        <h1>User Profile</h1>
+	        <p>
+	            <tr>
+					{{form}}
+				</tr>
+				<tr>
+	            	<input type="submit" value="Save">
+	            </tr>
+	        </p>
+	    </div>
+		<div class="panel right" id="vehicles_div">
+	        <div class="my-notifications">
+	        	<h1>My Vehicles</h1>
+		        <div class="vehicles">
+		        	<select id="add_car" onchange="addCar()">
+		        		{% for car in vehicles %}
+				           <option value={{car.model}}>{{car.model}}</option>
+				        {% endfor %}
+				    </select>
+		        </div>
+		        <div>
+		        	<table id="add_car_table">
+			        	{% for veh in my_vehicles %}
+				    	    <tr id="row-{{veh.model}}">
+				    	    	<td id="cell-{{veh.model}}"">
+					    	    	<input type="text" id="{{veh.model}}" value="{{veh.model}}" readonly>
+					    	    	<label for={{veh.model}}><a href="javascript:;" onclick="removeCar('cell-{{veh.model}}');">remove</a></label>
+					    	    </td>
+				    	    </tr>
+						{% endfor %}
+					</table>
+				</div>
+	        </div>
+	        <div class="public-notifications">
+	        	<h1>My People</h1>
+		        <div class="vehicles">
+		        	<select id="add_person" onchange="addPerson()">
+		        		{% for person in people %}
+				           <option value={{person.mobile}}>{{person.name}}</option>
+				        {% endfor %}
+				    </select>
+		        </div>
+	        	<table id="add_person_table">
+		        	{% for person in my_people %}
+			    	    <tr>
+			    	    	<input type="text" value="{{person.name}}" readonly>
+			    	    </tr>
+					{% endfor %}
+				</table>
+	        </div>
+	    </div>
+    </form>
    	<script>
    		function addCar()
 		{
 		    var table = document.getElementById('add_car_table');
-	        var rowCount = table.rows.length;
-	        var row = table.insertRow(rowCount);
 	        var added = document.getElementById('add_car');
 	        var sel_val = added.options[added.selectedIndex].value;
+	        var rowCount = table.rows.length;
+	        var row = table.insertRow(rowCount);
 	        var input = table.getElementsByTagName('input'); 
 	        for ( var z = 0; z < input.length; z++ ) { 
 	        	if (input[z].value == sel_val){
 	        		alert(sel_val+' is already added!');
 	        		return false;
 	        	}
-		    } 
-	       	row.innerHTML = row.innerHTML +' <input type="text" id="car-1" name="car-1" value='+sel_val+' readonly/>'+' <label for="car-1"><a href="javascript:;" onclick="removeCar(this);">remove</a></label>'
+		    }
+		    var cell = row.insertCell(0);
+		    cell.id='cell-'+sel_val;
+	       	cell.innerHTML = cell.innerHTML +' <input type="text" id="car-1" name="car-'+sel_val+'" value='+sel_val+' readonly/>'+' <label for="car-1"><a href="javascript:;" onclick="removeCar(cell-'+sel_val+');">remove</a></label>'
 		}
    		
-   		function removeCar(label)
+   		function removeCar(cell_id)
 		{	
 			var table = document.getElementById('add_car_table');
-	        var parentRow = label.parentElement;
-	        var rowIndex = parentRow.parentNode.rowIndex;
-	        table.deleteRow(rowIndex);
+	        var cell = document.getElementById(cell_id);
+	        var index = cell.parentElement.rowIndex;
+	        table.deleteRow(index);
 		}
    	</script>
 {% endblock %}
