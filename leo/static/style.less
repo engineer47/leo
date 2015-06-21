@@ -28,8 +28,28 @@ body {
 	margin: 0; padding: 0;
 }
 
+.flash {
+    padding: 10px;
+    margin: 20px 0;
+    &.error {
+        background: #ffefef;
+        color: #4c1717;
+        border: 1px solid #4c1717;
+    }
+    &.warning {
+        background: #ffe4c1;
+        color: #79420d;
+        border: 1px solid #79420d;
+    }
+    &.notice {
+        background: #efffd7;
+        color: #8ba015;
+        border: 1px solid #8ba015;
+    }
+}
+
 input {
-	width: 236px;
+	width: 179px;
 	height: 38px;
 	border: 1px solid @border-color;
 	padding: 0 10px;
@@ -38,6 +58,11 @@ input {
 	&:focus {
 		background: #FFFDF2;
 	}
+    &.error {
+        background: #ffefef;
+        color: #4c1717;
+        border: 1px solid #4c1717;
+    }
 }
 
 input[type="submit"] {
@@ -112,18 +137,21 @@ header {
 			font-size: 14px;
 			&.right {
 				width: 303px;
-				height: 313px;
+				height: 550px;
 				float: right;
 				textarea.ribbitText {
 					width: 249px;
 					height: 160px;
 					border: 1px solid @border-color;
+                    &.error {
+                        border: 1px solid #4C1717;
+                    }
 				}
 			}
 			&.left {
 				width: @content-width - 327;
-				height: 552px;
 				float: left;
+				height: 552px;
 				overflow-y: scroll;
 				div.ribbitWrapper {
 					padding: 15px 0;
@@ -257,7 +285,7 @@ header {
     position: relative;
 }
 .dot {
-    background-color: #80B184;
+    background-color: white;
     -webkit-transition: all 1s ease;
     -moz-transition: all 1s ease;
     transition: all 1s ease;
@@ -293,6 +321,7 @@ footer {
 		padding: 15px;
 		img {
 			float: right;
+            margin-right: 5px;
 		}
 	}
 }

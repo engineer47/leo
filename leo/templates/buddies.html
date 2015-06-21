@@ -73,15 +73,16 @@
 	            	{% elif sighting_type == 'vehicle' %}
 	            		<tr>
 		            		<td>
-		            			Registration: <input type="text" name="human-name">
+		            			<a href="/vehicle_lov?keepThis=true&TB_iframe=true&height=250&width=250&modal=true" title="" class="thickbox">Registration</a>
+		            			<input type="text" id="registration" name="registration" value="">
 		            		</td>
 		            		<td>
-		            			Model: <input type="text" name="human-number">
+		            			Model: <input type="text" id="model" name="model" value="">
 		            		</td>
 		            	</tr>
 		            	<tr>
 		            		<td colspan=2>
-		            			Descrption: <textarea rows="4" cols="50" name="human-number"></textarea>
+		            			Descrption: <textarea rows="4" cols="50" name="description"></textarea>
 		            		</td>
 		            	</tr>
 	            	{% elif sighting_type == 'infranstructure' %}
@@ -113,22 +114,42 @@
         </div>
     </div>
     <script>
+    	var map;
+    	var marker;
+    	
 		function initialize() {
 		  var mapOptions = {
 		    zoom: 8,
 		    center: new google.maps.LatLng(-24.657679, 25.909047)
 		  };	
-		  var map = new google.maps.Map(document.getElementById('map-canvas'),
+		  map = new google.maps.Map(document.getElementById('map-canvas'),
 		      mapOptions);
-		}	
+		  google.maps.event.addListener(map, 'rightclick', function(event) {
+	        	placeMarker(event.latLng);
+	    	});  
+		}
+		
 		function loadScript() {
 		  var script = document.createElement('script');
 		  script.type = 'text/javascript';
 		  script.src = 'https://maps.googleapis.com/maps/api/js?v=3.exp' +
 		      '&signed_in=true&callback=initialize';
 		  document.body.appendChild(script);
-		}	
+		}
+			
 		window.onload = loadScript;
+		
+		function placeMarker(location) {
+	        marker = new google.maps.Marker({
+	            position: location,
+	            map: map,
+	            title: 'Sighting Location',
+	            draggable: true,
+	        });
+	        google.maps.event.addListener(marker, 'rightclick', function(event) {
+		        marker.setMap(null);
+		    });
+		}
 		
 		$(document).ready(function(){
 			$(".timeline-item").hover(function () {

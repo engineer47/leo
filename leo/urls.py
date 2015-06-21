@@ -13,6 +13,7 @@ urlpatterns = patterns('',
     url(r'^user_profile/(?P<username>\w{0,30})/$', 'leo_app.views.user_profile'),
     url(r'^user_profile/$', 'leo_app.views.user_profile'),
     url(r'^vehicle_owner/$', 'leo_app.views.vehicle_owner'),
+    url(r'^vehicle_lov/', 'leo_app.views.vehicle_lov'),
 )
 
 urlpatterns += patterns('django.contrib.staticfiles.views',

@@ -72,8 +72,9 @@
 	        	}
 		    }
 		    var cell = row.insertCell(0);
-		    cell.id='cell-'+sel_val;
-	       	cell.innerHTML = cell.innerHTML +' <input type="text" id="car-1" name="car-'+sel_val+'" value='+sel_val+' readonly/>'+' <label for="car-1"><a href="javascript:;" onclick="removeCar(cell-'+sel_val+');">remove</a></label>'
+		    cell.id = 'cell-'+sel_val;
+		    var argument = "'cell-"+sel_val+"'";
+	       	cell.innerHTML = cell.innerHTML +' <input type="text" id="car-1" name="car-'+sel_val+'" value='+sel_val+' readonly/>'+' <label for="car-1"><a href="javascript:;" onclick="removeCar('+argument+');">remove</a></label>';
 		}
    		
    		function removeCar(cell_id)

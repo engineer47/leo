@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html>
+	<table class="lov_table">
+		{% for veh in vehicles %}
+			<tr class="lov_row">
+				<td class="lov_cell">
+					<a href="javascript:;" onclick="populateLov('{{veh.registration}}', '{{veh.model}}');">{{veh.model}}</a>
+				</td>
+			</tr>
+		{% endfor %}
+	</table>
+	<script>
+		function populateLov(registration, model)
+		{	
+	        window.parent.document.getElementById('registration').value = registration;
+	        window.parent.document.getElementById('model').value = model;
+	        //alert(window.parent.document.getElementById('registration').value)
+	        //document.vehicle_lov_form.submit();
+	        self.parent.tb_remove();
+		}
+	</script>
+</html>

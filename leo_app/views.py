@@ -94,6 +94,11 @@ def user_profile(request, username=None):
                    'my_vehicles': Vehicle.objects.filter(owner=user_profile),
                    'username': request.user.username, })
 
+
+def vehicle_lov(request):
+    return render(request, 
+                  'vehicle_lov.html',
+                  {'vehicles': Vehicle.objects.all()})
 @login_required
 def vehicle_owner(request):
     if request.method == 'POST':
@@ -105,24 +110,35 @@ def vehicle_owner(request):
                    'vehicles': Vehicle.objects.all().exclude(owner=request.user),
                    'my_vehicles': Vehicle.objects.filter(owner=request.user),
                    'username': request.user.username, })
-    
+
 def index(request, auth_form=None, user_form=None):
     # User is logged in
     if request.user.is_authenticated():
         ribbit_form = LeoForm()
         user = request.user
+        model = ''
+        registration = ''
         ribbits_self = Ribbit.objects.filter(user=user.id)
         #ribbits_buddies = Ribbit.objects.filter(user__userprofile__in=user.profile.follows.all)
         #ribbits = ribbits_self | ribbits_buddies
 
         if request.POST.get('sighting'):
+            chosen_car = None
             sighting_type = request.POST.get('sighting')
+            if sighting_type == 'vehicle':
+                if request.POST.get('clicked_car', None):
+                    chosen_car = Vehicle.objects.get(registration=request.POST.get('clicked_car'))
+                if chosen_car:
+                    model = chosen_car.model
+                    registration = chosen_car.registration
         else:
             sighting_type = '------'
         return render(request,
                       'buddies.html',
                       {'ribbit_form': ribbit_form, 'user': user,
                        #'ribbits': ribbits,
+                       'model': model,
+                       'registration': registration,
                        'sighting_type': sighting_type,
                        'notifications': [1, 2, 3],
                        'public_notifications': [1, 2, 3],
@@ -132,7 +148,7 @@ def index(request, auth_form=None, user_form=None):
         # User is not logged in
         auth_form = auth_form or AuthenticateForm()
         user_form = user_form or UserCreateForm()
- 
+
         return render(request,
                       'home.html',
                       {'auth_form': auth_form, 'user_form': user_form, })
