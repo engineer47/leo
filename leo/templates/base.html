@@ -4,14 +4,14 @@
     <link rel="stylesheet/less" href="{{ STATIC_URL }}style.less">
     <link rel="stylesheet" href="{{ STATIC_URL }}thickbox.css" type="text/css" media="screen" />
     <script src="{{ STATIC_URL }}less.js"></script>
-    <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="{{ STATIC_URL }}jquery-1.11.3.js"></script>
     <script src="{{ STATIC_URL }}thickbox.js"></script>
 </head>
 <body>
     <header>
         <div class="wrapper">
-            <img src="{{ STATIC_URL }}gfx/logo.png">
-            <span>Twitter Clone</span>
+            <!--<img src="{{ STATIC_URL }}gfx/logo.png">
+            <span>Twitter Clone</span>-->
             {% block login %}
             <a href="/">Home</a>&nbsp;&nbsp;&nbsp;&nbsp;
             <!--<a href="/users/">Public Users</a>-->
@@ -47,7 +47,7 @@
     </div>
     <footer>
         <div class="wrapper">
-            Leo - A Twitter Clone
+            Leo
             <!-- <a href="http://net.tutsplus.com">
                 <img src="{{ STATIC_URL }}gfx/logo-nettuts.png">
             </a>-->
