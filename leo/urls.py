@@ -37,3 +37,6 @@ urlpatterns += patterns('django.contrib.staticfiles.views',
 # 
 # for entry in new_pos_year_2:
 #     f.write('{},{},{},{},{},\n'.format(entry.subject_identifier, entry.hiv_result, entry.referral_code, entry.new_pos, entry.subject_visit.household_member.household_structure.household.plot.community))
+
+subject_referrals = SubjectReferral.objects.filter(hiv_result='POS', on_art=None)
+subject_referrals.update(on_art=False)

@@ -1,14 +1,12 @@
 <!DOCTYPE html>
 <html>
-	<table class="lov_table">
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<input type="text" id="filter" class="filter" placeholder="enter registration">
+	<ul id="UsersSelect" class="list-group" style="overflow: auto;">
 		{% for veh in vehicles %}
-			<tr class="lov_row">
-				<td class="lov_cell">
-					<a href="javascript:;" onclick="populateLov('{{veh.registration}}', '{{veh.model}}');">{{veh.model}}</a>
-				</td>
-			</tr>
+			<li style="display: none;" class="list-group-item" value="115099"><a href="javascript:;" onclick="populateLov('{{veh.registration}}', '{{veh.model}}');">{{veh.model}}</a></li>
 		{% endfor %}
-	</table>
+	</ul>
 	<script>
 		function populateLov(registration, model)
 		{	
@@ -18,5 +16,23 @@
 	        //document.vehicle_lov_form.submit();
 	        self.parent.tb_remove();
 		}
+		
+		$(document).ready(function(){
+			$('#filter').keyup(function(){
+                if (this.value == '')
+                {
+                    $('#UsersSelect li').show();
+                }
+                else
+                {
+                    $('#UsersSelect li').hide();
+                    $('#UsersSelect').find("li:contains('" + this.value + "')").show();
+                    if ($('#UsersSelect').find("li:contains('" + this.value + "')").size() == 1)
+                    {
+                        $('#UsersSelect').find("li:contains('" + this.value + "')").get(0).click();
+                    }
+                }
+            });
+		});
 	</script>
-</html>
+    
