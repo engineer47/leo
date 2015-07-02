@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.http import Http404
-from leo_app.forms import AuthenticateForm, UserCreateForm, LeoForm, UserProfileForm
+from leo_app.forms import AuthenticateForm, UserCreateForm, LeoForm, UserProfileForm, SightingForm
 from leo_app.models import Ribbit, UserProfile, Vehicle, Infridgement
 
 def get_latest(user):
@@ -129,16 +129,14 @@ def index(request, auth_form=None, user_form=None):
         ribbits_self = Ribbit.objects.filter(user=user.id)
         #ribbits_buddies = Ribbit.objects.filter(user__userprofile__in=user.profile.follows.all)
         #ribbits = ribbits_self | ribbits_buddies
-
-        if request.POST.get('sighting'):
-            chosen_car = None
+        if request.method == 'POST':
+            # All POST data will contain a value for sighting
             sighting_type = request.POST.get('sighting')
-            if sighting_type == 'vehicle':
-                if request.POST.get('clicked_car', None):
-                    chosen_car = Vehicle.objects.get(registration=request.POST.get('clicked_car'))
-                if chosen_car:
-                    model = chosen_car.model
-                    registration = chosen_car.registration
+            form = SightingForm(request.POST)
+            # check whether it's valid:
+            if form.is_valid():
+                pass
+        # What if the method is a get?
         else:
             sighting_type = '------'
         return render(request,

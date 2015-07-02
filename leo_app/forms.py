@@ -3,7 +3,7 @@ from django.core.files.images import get_image_dimensions
 from django.contrib.auth.models import User
 from django import forms
 from django.utils.html import strip_tags
-from leo_app.models import Ribbit, UserProfile
+from leo_app.models import Ribbit, UserProfile, Sighting
 
 class UserCreateForm(UserCreationForm):
     #avatar = forms.ImageField(required=False, widget=forms.widgets.ClearableFileInput(attrs={'placehoder': 'avatar'}))
@@ -27,6 +27,16 @@ class UserCreateForm(UserCreationForm):
                   'password2']
         profile_fields = ['mobile']
         model = User
+
+class SightingForm(forms.ModelForm):
+    registration = forms.CharField(required=True)
+    vehicle_model = forms.CharField(required=True)
+    infridgement = forms.CharField(required=True)
+    infridgement_code = forms.IntegerField(required=True)
+    sighting = forms.CharField(required=True)
+
+    class Meta:
+        model = Sighting
 
 class AuthenticateForm(AuthenticationForm):
     username = forms.CharField(widget=forms.widgets.TextInput(attrs={'placeholder': 'Username'}))

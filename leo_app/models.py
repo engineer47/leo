@@ -22,6 +22,8 @@ class Infridgement(models.Model):
     code = models.IntegerField(unique=True)
     short_description = models.CharField(max_length=50)
 
+class Sighting(models.Model):
+    pass
 
 class Vehicle(models.Model):
     registration = models.CharField(unique=True, max_length=10)
