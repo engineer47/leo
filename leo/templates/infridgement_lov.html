@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<input type="text" id="filter" class="filter" placeholder="infridgement keyword">
+	<ul id="UsersSelect" class="list-group" style="overflow: auto;">
+		{% for infr in infridgements %}
+			<li style="display: none;" class="list-group-item" value="115099"><a href="javascript:;" onclick="populateLov('{{infr.short_description}}', '{{infr.code}}');">{{infr.short_description}}</a></li>
+		{% endfor %}
+	</ul>
+	<script>
+		function populateLov(infridgement, infridgement_code)
+		{	
+	        window.parent.document.getElementById('infridgement').value = infridgement;
+	        window.parent.document.getElementById('infridgement_code').value = infridgement_code;
+	        self.parent.tb_remove();
+		}
+		
+		$(document).ready(function(){
+			$('#filter').keyup(function(){
+                if (this.value == '')
+                {
+                    $('#UsersSelect li').show();
+                }
+                else
+                {
+                    $('#UsersSelect li').hide();
+                    $('#UsersSelect').find("li:contains('" + this.value + "')").show();
+                    if ($('#UsersSelect').find("li:contains('" + this.value + "')").size() == 1)
+                    {
+                        $('#UsersSelect').find("li:contains('" + this.value + "')").get(0).click();
+                    }
+                }
+            });
+		});
+	</script>
+    

@@ -7,7 +7,7 @@ from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.http import Http404
 from leo_app.forms import AuthenticateForm, UserCreateForm, LeoForm, UserProfileForm
-from leo_app.models import Ribbit, UserProfile, Vehicle
+from leo_app.models import Ribbit, UserProfile, Vehicle, Infridgement
 
 def get_latest(user):
     try:
@@ -99,6 +99,14 @@ def vehicle_lov(request):
     return render(request, 
                   'vehicle_lov.html',
                   {'vehicles': Vehicle.objects.all()})
+
+
+def infridgement_lov(request):
+    return render(request, 
+                  'infridgement_lov.html',
+                  {'infridgements': Infridgement.objects.all()})
+
+
 @login_required
 def vehicle_owner(request):
     if request.method == 'POST':

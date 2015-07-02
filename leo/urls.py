@@ -14,6 +14,7 @@ urlpatterns = patterns('',
     url(r'^user_profile/$', 'leo_app.views.user_profile'),
     url(r'^vehicle_owner/$', 'leo_app.views.vehicle_owner'),
     url(r'^vehicle_lov/', 'leo_app.views.vehicle_lov'),
+    url(r'^infridgement_lov/', 'leo_app.views.infridgement_lov'),
 )
 
 urlpatterns += patterns('django.contrib.staticfiles.views',
@@ -37,6 +38,3 @@ urlpatterns += patterns('django.contrib.staticfiles.views',
 # 
 # for entry in new_pos_year_2:
 #     f.write('{},{},{},{},{},\n'.format(entry.subject_identifier, entry.hiv_result, entry.referral_code, entry.new_pos, entry.subject_visit.household_member.household_structure.household.plot.community))
-
-subject_referrals = SubjectReferral.objects.filter(hiv_result='POS', on_art=None)
-subject_referrals.update(on_art=False)

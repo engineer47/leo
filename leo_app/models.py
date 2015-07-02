@@ -18,6 +18,11 @@ class UserProfile(models.Model):
         return "http://www.gravatar.com/avatar/%s?s=50" % hashlib.md5(self.user.email).hexdigest()
 
 
+class Infridgement(models.Model):
+    code = models.IntegerField(unique=True)
+    short_description = models.CharField(max_length=50)
+
+
 class Vehicle(models.Model):
     registration = models.CharField(unique=True, max_length=10)
     make = models.CharField(max_length=20)
