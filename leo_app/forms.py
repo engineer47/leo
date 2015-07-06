@@ -28,7 +28,22 @@ class UserCreateForm(UserCreationForm):
         profile_fields = ['mobile']
         model = User
 
-class SightingForm(forms.ModelForm):
+
+class VehicleSightingForm(forms.ModelForm):
+    registration = forms.CharField(required=True)
+    vehicle_model = forms.CharField(required=True)
+    infridgement = forms.CharField(required=True)
+    infridgement_code = forms.IntegerField(required=True)
+    # Vehicle, Human or Infrastructure
+    sighting = forms.CharField(required=True)
+    longitude = forms.DecimalField(decimal_places=4, max_digits=7)
+    latitude = forms.DecimalField(decimal_places=4, max_digits=6)
+
+    class Meta:
+        model = Sighting
+
+
+class HumanSightingForm(forms.ModelForm):
     registration = forms.CharField(required=True)
     vehicle_model = forms.CharField(required=True)
     infridgement = forms.CharField(required=True)
@@ -37,6 +52,18 @@ class SightingForm(forms.ModelForm):
 
     class Meta:
         model = Sighting
+
+
+class InfrastructureSightingForm(forms.ModelForm):
+    registration = forms.CharField(required=True)
+    vehicle_model = forms.CharField(required=True)
+    infridgement = forms.CharField(required=True)
+    infridgement_code = forms.IntegerField(required=True)
+    sighting = forms.CharField(required=True)
+
+    class Meta:
+        model = Sighting
+
 
 class AuthenticateForm(AuthenticationForm):
     username = forms.CharField(widget=forms.widgets.TextInput(attrs={'placeholder': 'Username'}))

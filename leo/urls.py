@@ -6,15 +6,15 @@ urlpatterns = patterns('',
     url(r'^login$', 'leo_app.views.login_view'), # login
     url(r'^logout$', 'leo_app.views.logout_view'), # logout
     url(r'^signup$', 'leo_app.views.signup'), # signup
-    url(r'^ribbits$', 'leo_app.views.public'), # public ribbits
+    url(r'^footprint/$', 'leo_app.views.footprint'), # road safety foot print
     url(r'^submit$', 'leo_app.views.submit'), # submit new ribbit
     url(r'^users/$', 'leo_app.views.users'),
     url(r'^users/(?P<username>\w{0,30})/$', 'leo_app.views.users'),
     url(r'^user_profile/(?P<username>\w{0,30})/$', 'leo_app.views.user_profile'),
     url(r'^user_profile/$', 'leo_app.views.user_profile'),
     url(r'^vehicle_owner/$', 'leo_app.views.vehicle_owner'),
-    url(r'^vehicle_lov/', 'leo_app.views.vehicle_lov'),
-    url(r'^infridgement_lov/', 'leo_app.views.infridgement_lov'),
+    url(r'^vehicle_lov/$', 'leo_app.views.vehicle_lov'),
+    url(r'^infridgement_lov/$', 'leo_app.views.infridgement_lov'),
 )
 
 urlpatterns += patterns('django.contrib.staticfiles.views',

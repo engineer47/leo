@@ -1,0 +1,152 @@
+{% extends "base.html" %}
+ 
+{% block content %}
+    <div class="tabs">
+	    <ul class="tab-links">
+	        <li class="current"><a href="#tab1">Overview</a></li>
+	        <li><a href="#tab2">Observations</a></li>
+	    </ul>
+	    <div class="tab-content">
+	        <div id="tab1" class="tab current">
+	        	<form action="/footprint/" method="post">
+	        		{% csrf_token %}
+		        	<table>
+		        		<tr>
+	        				<td>
+		        				<select id="type" name="type">
+		        					<option value="human">human</option>
+		        					<option value="vehicle">vehicle</option>
+			            	  		<option value="infranstructure">infranstructure</option>
+			            	  		<option value="------">------</option>
+			            	  	</select>
+		            	  	</td>
+		            	  	<td>
+	            				<input type="submit" value="Refresh">
+		            	  	</td>
+		        		</tr>
+		        		<tr id="human-input">
+		        			<td>
+		        				<a href="/registered_user_lov?keepThis=true&TB_iframe=true&height=250&width=250&modal=true" title="" class="thickbox">User</a>
+		        				<input type="text" id="another_user" name="another_user" value={{ username }} readonly>
+		        			</td>
+		        		</tr>
+		        		<tr id="vehicle-input" style="display: none;">
+		        			<td>
+		            			<a href="/vehicle_lov?keepThis=true&TB_iframe=true&height=250&width=250&modal=true" title="" class="thickbox">Registration</a>
+		            			<input type="text" id="registration" name="registration" value="">
+		            		</td>
+		            		<td>
+		            			Model: <input type="text" id="vehicle_model" name="vehicle_model" value="">
+		            		</td>
+		        		</tr>
+		        		<tr id="infra-input" style="display: none;"">
+		        			<td>
+		        				<a href="/registered_user_lov?keepThis=true&TB_iframe=true&height=250&width=250&modal=true" title="" class="thickbox">Infrastructure</a>
+		        				<input type="text" id="another_user" name="another_user" value="" readonly>
+		        			</td>
+		        		</tr>
+		        	</table>
+	        	</form>
+	        	<canvas id="graph" width="400" height="300"></canvas> 
+	        	<input type="hidden" id="graph_data" name="graph_data" value="{{graph_data}}">
+	        </div>
+	        <div id="tab2" class="tab">
+	        </div>
+	    </div>
+    </div>
+  	<script>
+  		var graph;
+  		var data;
+		var xPadding = 30;
+		var yPadding = 30;
+		
+  		$(document).ready(function() {
+		    $('.tabs .tab-links a').on('click', function(e)  {
+		        var currentAttrValue = $(this).attr('href');
+		 
+		        // Show/Hide Tabs
+		        $('.tabs ' + currentAttrValue).show().siblings().hide();
+		 
+		        // Change/remove current tab to current
+		        $(this).parent('li').addClass('current').siblings().removeClass('current');
+		 
+		        e.preventDefault();
+		    });
+		    $('#type').on('change', function() {
+				if($(this).val() == 'vehicle'){
+					$('#vehicle-input').show()
+					$('#human-input').hide()
+					$('#infra-input').hide()
+				}
+				if($(this).val() == 'human'){
+					$('#vehicle-input').hide()
+					$('#human-input').show()
+					$('#infra-input').hide()
+				}
+				if($(this).val() == 'infranstructure'){
+					$('#vehicle-input').hide()
+					$('#human-input').hide()
+					$('#infra-input').show()
+				}
+			});
+		    graph = $('#graph');
+		    data = $('#graph_data').val();
+		    alert(data)
+    		var c = graph[0].getContext('2d');
+    		c.lineWidth = 2;
+			c.strokeStyle = '#333';
+			c.font = 'italic 8pt sans-serif';
+			c.textAlign = "center";
+			c.beginPath();
+			c.moveTo(xPadding, 0);
+			c.lineTo(xPadding, graph.height() - yPadding);
+			c.lineTo(graph.width(), graph.height() - yPadding);
+			c.stroke();
+			for(var i = 0; i < data.values.length; i ++) {
+			    c.fillText(data.values[i].X, getXPixel(i), graph.height() - yPadding + 20);
+			}
+			c.textAlign = "right"
+			c.textBaseline = "middle";
+			 
+			for(var i = 0; i < getMaxY(); i += 10) {
+			    c.fillText(i, xPadding - 10, getYPixel(i));
+			}
+			c.strokeStyle = '#f00';
+			c.beginPath();
+			c.moveTo(getXPixel(0), getYPixel(data.values[0].Y));
+			 
+			for(var i = 1; i < data.values.length; i ++) {
+			    c.lineTo(getXPixel(i), getYPixel(data.values[i].Y));
+			}
+			c.stroke();
+			c.fillStyle = '#333';
+ 
+			for(var i = 0; i < data.values.length; i ++) {  
+			    c.beginPath();
+			    c.arc(getXPixel(i), getYPixel(data.values[i].Y), 4, 0, Math.PI * 2, true);
+			    c.fill();
+			}
+		});
+		
+		function getMaxY() {
+		    var max = 0;		     
+		    for(var i = 0; i < data.values.length; i ++) {
+		        if(data.values[i].Y > max) {
+		            max = data.values[i].Y;
+		        }
+		    }		     
+		    max += 10 - max % 10;
+		    return max;
+		}
+		 
+		function getXPixel(val) {
+		    return ((graph.width() - xPadding) / data.values.length) * val + (xPadding * 1.5);
+		}
+		 
+		function getYPixel(val) {
+		    return graph.height() - (((graph.height() - yPadding) / getMaxY()) * val) - yPadding;
+		}
+		
+		
+  	</script>
+{% endblock %}

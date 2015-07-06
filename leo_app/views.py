@@ -1,13 +1,17 @@
+import json
+from datetime import datetime
 from django.shortcuts import render, redirect
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
+from django.contrib import messages
 from django.db.models import Count
 from django.http import HttpResponseRedirect
 from django.http import Http404
-from leo_app.forms import AuthenticateForm, UserCreateForm, LeoForm, UserProfileForm, SightingForm
-from leo_app.models import Ribbit, UserProfile, Vehicle, Infridgement
+from leo_app.forms import (AuthenticateForm, UserCreateForm, LeoForm, UserProfileForm, VehicleSightingForm,
+                           HumanSightingForm, InfrastructureSightingForm)
+from leo_app.models import Ribbit, UserProfile, Vehicle, Infridgement, Sighting
 
 def get_latest(user):
     try:
@@ -132,10 +136,24 @@ def index(request, auth_form=None, user_form=None):
         if request.method == 'POST':
             # All POST data will contain a value for sighting
             sighting_type = request.POST.get('sighting')
-            form = SightingForm(request.POST)
+            if sighting_type == 'vehicle':
+                form = VehicleSightingForm(request.POST)
+            elif sighting_type == 'human':
+                form = HumanSightingForm(request.POST)
+            elif sighting_type == 'infrastructure':
+                form = InfrastructureSightingForm(request.POST)
+            else:
+                sighting_type = '------'
             # check whether it's valid:
             if form.is_valid():
-                pass
+                car = Vehicle.objects.get(registration=form.cleaned_data.get('registration'))
+                infridgement = Infridgement.objects.get(code=form.cleaned_data.get('infridgement_code'))
+                longitude = form.cleaned_data.get('longitude')
+                latitude = form.cleaned_data.get('latitude')
+                Sighting.objects.create(vehicle=car, infridgement=infridgement, longitude=longitude,
+                                        latitude=latitude, sighting_datetime=datetime.now())
+                msg = "Sucessfully registered a sighting agains vehicle registered {}".format(car.registration)
+                messages.add_message(request, messages.INFO, msg)
         # What if the method is a get?
         else:
             sighting_type = '------'
@@ -203,7 +221,37 @@ def public(request, ribbit_form=None):
                    'public.html',
                    {'ribbit_form': ribbit_form, 'next_url': '/ribbits',
                     'ribbits': ribbits, 'username': request.user.username})
- 
+
+@login_required
+def footprint(request):
+    username = request.GET.get('username')
+    sightings = None
+    data = {'values':[]}
+    if request.method == 'GET':
+        my_sightings = Sighting.objects.filter(human__user__username=username)
+        sightings = my_sightings
+    else:
+        sighting_type = request.POST.get('type')
+        if sighting_type == 'vehicle':
+            sightings = Sighting.objects.filter(vehicle__registration=request.POST.get('registration'))
+            sightings = sightings.values('year_month_slug').annotate(dcount=Count('year_month_slug'))
+            for index in sightings:
+                index['X'] = index.pop('year_month_slug')
+                index['Y'] = index.pop('dcount')
+            data['values'] = sightings
+        elif sighting_type == 'human':
+            pass
+        elif sighting_type == 'infrastructure':
+            pass
+        else:
+            sighting_type = '------'
+        print str(data)
+    return render(request,
+                   'footprint.html',
+                   {'username': request.user.username,
+                    'graph_data': str(data)
+                    })
+
 @login_required
 def submit(request):
     if request.method == "POST":
