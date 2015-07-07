@@ -51,6 +51,18 @@
 	        	<input type="hidden" id="graph_data" name="graph_data" value="{{graph_data}}">
 	        </div>
 	        <div id="tab2" class="tab">
+	        	<table border="1">
+	        		{% for st in sightings_tuple %}
+	        			<tr style="background: LightYellow;">
+	        				<td>
+	        					{{ st.0 }}
+	        				</td>
+	        				<td>
+	        					{{ st.1 }}
+	        				</td>
+	        			</tr>
+	        		{% endfor %}
+	        	</table>
 	        </div>
 	    </div>
     </div>
@@ -91,7 +103,7 @@
 			});
 		    graph = $('#graph');
 		    data = $('#graph_data').val();
-		    alert(data)
+		    data = $.parseJSON(data);
     		var c = graph[0].getContext('2d');
     		c.lineWidth = 2;
 			c.strokeStyle = '#333';
@@ -108,7 +120,7 @@
 			c.textAlign = "right"
 			c.textBaseline = "middle";
 			 
-			for(var i = 0; i < getMaxY(); i += 10) {
+			for(var i = 0; i < getMaxY(); i ++) {
 			    c.fillText(i, xPadding - 10, getYPixel(i));
 			}
 			c.strokeStyle = '#f00';

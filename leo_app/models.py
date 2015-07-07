@@ -57,7 +57,7 @@ class Sighting(models.Model):
     def save(self, *args, **kwargs):
         if not self.vehicle and not self.human and not self.infrastructure:
             raise TypeError('Atleast one of vehicle, human or infrastructure must be populated when submitting a sighting')
-        self.year_month_slug = self.sighting_datetime.strftime('%b/%Y')
+        self.year_month_slug = str(self.sighting_datetime.strftime('%b/%Y'))
         super(Sighting, self).save(*args, **kwargs)
 
 User.profile = property(lambda u: UserProfile.objects.get_or_create(user=u)[0])

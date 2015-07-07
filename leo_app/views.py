@@ -226,6 +226,7 @@ def public(request, ribbit_form=None):
 def footprint(request):
     username = request.GET.get('username')
     sightings = None
+    sightings_tuple = []
     data = {'values':[]}
     if request.method == 'GET':
         my_sightings = Sighting.objects.filter(human__user__username=username)
@@ -234,6 +235,9 @@ def footprint(request):
         sighting_type = request.POST.get('type')
         if sighting_type == 'vehicle':
             sightings = Sighting.objects.filter(vehicle__registration=request.POST.get('registration'))
+            for st in sightings:
+                sightings_tuple.append((st.sighting_datetime.strftime('%d/%b/%Y'),
+                                        st.infridgement.short_description))
             sightings = sightings.values('year_month_slug').annotate(dcount=Count('year_month_slug'))
             for index in sightings:
                 index['X'] = index.pop('year_month_slug')
@@ -249,7 +253,8 @@ def footprint(request):
     return render(request,
                    'footprint.html',
                    {'username': request.user.username,
-                    'graph_data': str(data)
+                    'sightings_tuple': sightings_tuple,
+                    'graph_data': str(data).replace('u\'', '\'').replace('\'', '"')
                     })
 
 @login_required
