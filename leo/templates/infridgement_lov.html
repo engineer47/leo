@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="{{ STATIC_URL }}jquery-1.11.3.js"></script>
 	<input type="text" id="filter" class="filter" placeholder="infridgement keyword">
 	<ul id="UsersSelect" class="list-group" style="overflow: auto;">
 		{% for infr in infridgements %}
@@ -8,9 +8,9 @@
 		{% endfor %}
 	</ul>
 	<script>
-		function populateLov(infridgement, infridgement_code)
+		function populateLov(infridgement_desc, infridgement_code)
 		{	
-	        window.parent.document.getElementById('infridgement').value = infridgement;
+	        window.parent.document.getElementById('infridgement_desc').value = infridgement_desc;
 	        window.parent.document.getElementById('infridgement_code').value = infridgement_code;
 	        self.parent.tb_remove();
 		}

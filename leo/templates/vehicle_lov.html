@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html>
-	<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+	<script src="{{ STATIC_URL }}jquery-1.11.3.js"></script>
 	<input type="text" id="filter" class="filter" placeholder="enter registration">
 	<ul id="UsersSelect" class="list-group" style="overflow: auto;">
 		{% for veh in vehicles %}

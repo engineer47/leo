@@ -6,12 +6,12 @@ from django.contrib.auth import login, authenticate, logout
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib import messages
-from django.db.models import Count
+from django.db.models import Count, Q
 from django.http import HttpResponseRedirect
 from django.http import Http404
 from leo_app.forms import (AuthenticateForm, UserCreateForm, LeoForm, UserProfileForm, VehicleSightingForm,
                            HumanSightingForm, InfrastructureSightingForm)
-from leo_app.models import Ribbit, UserProfile, Vehicle, Infridgement, Sighting
+from leo_app.models import Ribbit, UserProfile, Vehicle, Infridgement, Sighting, Notification
 
 def get_latest(user):
     try:
@@ -131,8 +131,13 @@ def index(request, auth_form=None, user_form=None):
         model = ''
         registration = ''
         ribbits_self = Ribbit.objects.filter(user=user.id)
+        my_notifications = None
+        my_vehicles = []
         #ribbits_buddies = Ribbit.objects.filter(user__userprofile__in=user.profile.follows.all)
         #ribbits = ribbits_self | ribbits_buddies
+        my_vehicles = Vehicle.objects.filter(owner__user__username=request.user.username)
+        my_notifications = Notification.objects.filter(Q(sighting__human__user__username=request.user.username) |
+                                                           Q(sighting__vehicle=my_vehicles))
         if request.method == 'POST':
             # All POST data will contain a value for sighting
             sighting_type = request.POST.get('sighting')
@@ -164,7 +169,7 @@ def index(request, auth_form=None, user_form=None):
                        'model': model,
                        'registration': registration,
                        'sighting_type': sighting_type,
-                       'notifications': [1, 2, 3],
+                       'notifications': my_notifications,
                        'public_notifications': [1, 2, 3],
                        'next_url': '/',
                        'username': request.user.username,  })

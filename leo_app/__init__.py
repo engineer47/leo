@@ -1,0 +1,1 @@
+from signals import sighting_on_post_save

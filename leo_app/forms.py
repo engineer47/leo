@@ -32,7 +32,7 @@ class UserCreateForm(UserCreationForm):
 class VehicleSightingForm(forms.ModelForm):
     registration = forms.CharField(required=True)
     vehicle_model = forms.CharField(required=True)
-    infridgement = forms.CharField(required=True)
+    #infridgement = forms.CharField(required=True)
     infridgement_code = forms.IntegerField(required=True)
     # Vehicle, Human or Infrastructure
     sighting = forms.CharField(required=True)
