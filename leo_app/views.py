@@ -137,7 +137,7 @@ def index(request, auth_form=None, user_form=None):
         #ribbits = ribbits_self | ribbits_buddies
         my_vehicles = Vehicle.objects.filter(owner__user__username=request.user.username)
         my_notifications = Notification.objects.filter(Q(sighting__human__user__username=request.user.username) |
-                                                           Q(sighting__vehicle=my_vehicles))
+                                                           Q(sighting__vehicle__in=my_vehicles))
         if request.method == 'POST':
             # All POST data will contain a value for sighting
             sighting_type = request.POST.get('sighting')
@@ -170,7 +170,7 @@ def index(request, auth_form=None, user_form=None):
                        'registration': registration,
                        'sighting_type': sighting_type,
                        'notifications': my_notifications,
-                       'public_notifications': [1, 2, 3],
+                       'public_notifications': [],
                        'next_url': '/',
                        'username': request.user.username,  })
     else:

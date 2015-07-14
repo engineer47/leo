@@ -29,7 +29,7 @@
 			        	{% for veh in my_vehicles %}
 				    	    <tr id="row-{{veh.model}}">
 				    	    	<td id="cell-{{veh.model}}"">
-					    	    	<input type="text" id="{{veh.model}}" value="{{veh.model}}" readonly>
+					    	    	<input type="text" name="car-{{veh.model}}" id="{{veh.model}}" value="{{veh.model}}" readonly>
 					    	    	<label for={{veh.model}}><a href="javascript:;" onclick="removeCar('cell-{{veh.model}}');">remove</a></label>
 					    	    </td>
 				    	    </tr>

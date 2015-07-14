@@ -9,15 +9,22 @@
         <div class="my-notifications">
         	{% for notif in notifications %}
 	    	    <div class="timeline-item">
-			        <div class="year">2008 <span class="marker"><span class="dot"></span></span></div>
-			        <div class="info"><a href="link">The in-house Gawker chat room is filled with photos of Rob Ford, and for one reason: Rob Ford takes a good goddamn photo.</a></div>
+			        <div class="year">{{notif.notification_datetime}}</div>
+			        <div class="info">
+			        	{% if notif.sighting.type == 'vehicle' %}
+			        		{{notif.sighting.vehicle.Make}} {{notif.sighting.vehicle.model}} Reg:{{notif.sighting.vehicle.registration}}<br>
+			        	{% elif notif.sighting.type == 'human' %}
+			        		{{notif.sighting.human.user.first_name}} {{notif.sighting.human.user.last_name}}<br>
+			        	{% endif %}
+			        	{{notif.sighting.infridgement.short_description}}
+			        </div>
 			    </div>
 			{% endfor %}
         </div>
         <div class="public-notifications">
         	{% for notif in public_notifications %}
 	    	    <div class="timeline-item-public">
-			        <div class="year">2008 <span class="marker"><span class="dot"></span></span></div>
+			        <div class="year">2008<span class="marker"><span class="dot"></span></div>
 			        <div class="info"><a href="link">The in-house Gawker chat room is filled with photos of Rob Ford, and for one reason: Rob Ford takes a good goddamn photo.</a></div>
 			    </div>
 			{% endfor %}
@@ -167,7 +174,7 @@
 		
 		$(document).ready(function(){
 			$(".timeline-item").hover(function () {
-			    $(".timeline-item").removeClass("active");
+			    $(".timeline-item").removeClass("timeline-item");
 			    $(this).toggleClass("active");
 			    $(this).prev(".timeline-item").toggleClass("close");
 			    $(this).next(".timeline-item").toggleClass("close");

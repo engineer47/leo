@@ -58,6 +58,15 @@ class Sighting(models.Model):
     longitude = models.DecimalField(decimal_places=4, max_digits=7)
     latitude = models.DecimalField(decimal_places=4, max_digits=6)
 
+    @property
+    def type(self):
+        if self.human:
+            return 'human'
+        elif self.vehicle:
+            return 'vehicle'
+        else:
+            return 'infra'
+
     def save(self, *args, **kwargs):
         if not self.vehicle and not self.human and not self.infrastructure:
             raise TypeError('Atleast one of vehicle, human or infrastructure must be populated when submitting a sighting')
