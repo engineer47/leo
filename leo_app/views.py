@@ -79,6 +79,19 @@ def user_profile(request, username=None):
             Vehicle.objects.filter(owner=user_profile).update(owner=None)
             # attach the updated list of vehicles to this profile
             Vehicle.objects.filter(model__in=updated_vehicles).update(owner=user_profile)
+
+            # TODO: search People by omang-ID not firstname and lastname.
+            updated_people = []
+            for key, value in request.POST.iteritems():
+                if key.find('per') != -1:
+                    updated_people.append(value)
+            # release all other users previously linked to this profile
+            UserProfile.linked_to.through.objects.filter(user__username=request.user.username).delete()
+            # link the updated list of users to this profile
+            for name in updated_people:
+                first_name, surname = name.split('.')
+                named_user = UserProfile.objects.get(user__firstname=first_name, user__surname=surname)
+                user_profile.linked_to.add(named_user)
             return HttpResponseRedirect('/user_profile/{}/'.format(form.cleaned_data.get('username')))
     else:
         #user = request.GET.get('username')
@@ -97,7 +110,7 @@ def user_profile(request, username=None):
                    'vehicles': Vehicle.objects.all(),
                    'my_vehicles': Vehicle.objects.filter(owner=user_profile),
                    'people': UserProfile.objects.all().exclude(user__username=request.user.username),
-                   #'my_people': UserProfile.objects.all(linked_to=username),
+                   'my_people': UserProfile.linked_to.through.objects.all(),
                    'username': request.user.username, })
 
 

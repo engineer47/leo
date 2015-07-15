@@ -14,6 +14,7 @@ class Ribbit(models.Model):
 class UserProfile(models.Model):
     user = models.OneToOneField(User)
     mobile = models.CharField(max_length=7)
+    linked_to = models.ManyToManyField("self", symmetrical=False)
     #follows = models.ManyToManyField('self', related_name='followed_by', symmetrical=False)
 
     def gravatar_url(self):
