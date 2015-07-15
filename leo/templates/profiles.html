@@ -30,7 +30,7 @@
 				    	    <tr id="row-{{veh.model}}">
 				    	    	<td id="cell-{{veh.model}}"">
 					    	    	<input type="text" name="car-{{veh.model}}" id="{{veh.model}}" value="{{veh.model}}" readonly>
-					    	    	<label for={{veh.model}}><a href="javascript:;" onclick="removeCar('cell-{{veh.model}}');">remove</a></label>
+					    	    	<label for="{{veh.model}}"><a href="javascript:;" onclick="removeCar('cell-{{veh.model}}');">remove</a></label>
 					    	    </td>
 				    	    </tr>
 						{% endfor %}
@@ -42,17 +42,22 @@
 		        <div class="vehicles">
 		        	<select id="add_person" onchange="addPerson()">
 		        		{% for person in people %}
-				           <option value={{person.mobile}}>{{person.name}}</option>
+				           <option value="{{person.user.first_name}}.{{person.user.last_name}}">{{person.user.first_name}} {{person.user.last_name}}</option>
 				        {% endfor %}
 				    </select>
 		        </div>
-	        	<table id="add_person_table">
-		        	{% for person in my_people %}
-			    	    <tr>
-			    	    	<input type="text" value="{{person.name}}" readonly>
-			    	    </tr>
-					{% endfor %}
-				</table>
+	        	<div>
+	        		<table id="add_person_table">
+			        	{% for per in my_people %}
+				    	    <tr id="row-{{per.mobile}}">
+				    	    	<td id="cell-{{per.mobile}}"">
+					    	    	<input type="text" name="per-{{per.mobile}}" id="{{per.mobile}}" value="{{person.user.first_name}} {{person.user.last_name}}" readonly>
+					    	    	<label for="{{per.mobilel}}"><a href="javascript:;" onclick="removePerson('cell-{{per.mobile}}');">remove</a></label>
+					    	    </td>
+				    	    </tr>
+						{% endfor %}
+					</table>
+	        	</div>
 	        </div>
 	    </div>
     </form>
@@ -80,6 +85,34 @@
    		function removeCar(cell_id)
 		{	
 			var table = document.getElementById('add_car_table');
+	        var cell = document.getElementById(cell_id);
+	        var index = cell.parentElement.rowIndex;
+	        table.deleteRow(index);
+		}
+		
+		function addPerson()
+		{
+		    var table = document.getElementById('add_person_table');
+	        var added = document.getElementById('add_person');
+	        var sel_val = added.options[added.selectedIndex].value;
+	        var rowCount = table.rows.length;
+	        var row = table.insertRow(rowCount);
+	        var input = table.getElementsByTagName('input'); 
+	        for ( var z = 0; z < input.length; z++ ) { 
+	        	if (input[z].value == sel_val){
+	        		alert(sel_val+' is already added!');
+	        		return false;
+	        	}
+		    }
+		    var cell = row.insertCell(0);
+		    cell.id = 'cell-'+sel_val;
+		    var argument = "'cell-"+sel_val+"'";
+	       	cell.innerHTML = cell.innerHTML +' <input type="text" id="per-1" name="per-'+sel_val+'" value='+sel_val+' readonly/>'+' <label for="per-1"><a href="javascript:;" onclick="removePerson('+argument+');">remove</a></label>';
+		}
+   		
+   		function removePerson(cell_id)
+		{	
+			var table = document.getElementById('add_person_table');
 	        var cell = document.getElementById(cell_id);
 	        var index = cell.parentElement.rowIndex;
 	        table.deleteRow(index);

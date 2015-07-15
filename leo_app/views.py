@@ -96,6 +96,8 @@ def user_profile(request, username=None):
                   {'form': form,
                    'vehicles': Vehicle.objects.all(),
                    'my_vehicles': Vehicle.objects.filter(owner=user_profile),
+                   'people': UserProfile.objects.all().exclude(user__username=request.user.username),
+                   #'my_people': UserProfile.objects.all(linked_to=username),
                    'username': request.user.username, })
 
 
