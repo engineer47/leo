@@ -164,7 +164,7 @@ def index(request, auth_form=None, user_form=None):
         my_people = user_profile.linked_to.through.objects.all()
         my_people_usernames = [person.to_userprofile.user.username for person in my_people]
         my_notifications = Notification.objects.filter(Q(sighting__human__user__username__in=my_people_usernames) |
-                                                           Q(sighting__vehicle__in=my_vehicles))
+                                                           Q(sighting__vehicle__in=my_vehicles)).order_by('-notification_datetime')
         if request.method == 'POST':
             # All POST data will contain a value for sighting
             sighting_type = request.POST.get('sighting')
