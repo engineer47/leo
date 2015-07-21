@@ -51,7 +51,7 @@
 			        	{% for per in my_people %}
 				    	    <tr id="row-{{per.mobile}}">
 				    	    	<td id="cell-{{per.mobile}}"">
-					    	    	<input type="text" name="per-{{per.mobile}}" id="{{per.mobile}}" value="{{person.user.first_name}} {{person.user.last_name}}" readonly>
+					    	    	<input type="text" name="per-{{per.mobile}}" id="{{per.mobile}}" value="{{per.to_userprofile.user.first_name}}.{{per.to_userprofile.user.last_name}}" readonly>
 					    	    	<label for="{{per.mobilel}}"><a href="javascript:;" onclick="removePerson('cell-{{per.mobile}}');">remove</a></label>
 					    	    </td>
 				    	    </tr>

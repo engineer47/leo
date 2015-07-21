@@ -56,12 +56,14 @@ def users(request, username="", ribbit_form=None):
 
 @login_required
 def user_profile(request, username=None):
+    user_profile = UserProfile.objects.get(user=request.user)
+    my_people = user_profile.linked_to.through.objects.all()
+    #my_people = []
     if request.method == 'POST':
         # create a form instance and populate it with data from the request:
         form = UserProfileForm(request.POST)
         # check whether it's valid:
         if form.is_valid():
-            user_profile = UserProfile.objects.get(user=request.user)
             updated_user_values = {}
             updated_profile_values = {}
             for fld in UserProfileForm.Meta.fields:
@@ -86,12 +88,13 @@ def user_profile(request, username=None):
                 if key.find('per') != -1:
                     updated_people.append(value)
             # release all other users previously linked to this profile
-            UserProfile.linked_to.through.objects.filter(user__username=request.user.username).delete()
+            UserProfile.objects.get(user__username=request.user.username).linked_to.clear()
             # link the updated list of users to this profile
             for name in updated_people:
                 first_name, surname = name.split('.')
-                named_user = UserProfile.objects.get(user__firstname=first_name, user__surname=surname)
+                named_user = UserProfile.objects.get(user__first_name=first_name, user__last_name=surname)
                 user_profile.linked_to.add(named_user)
+            my_people = user_profile.linked_to.through.objects.all()
             return HttpResponseRedirect('/user_profile/{}/'.format(form.cleaned_data.get('username')))
     else:
         #user = request.GET.get('username')
@@ -109,8 +112,9 @@ def user_profile(request, username=None):
                   {'form': form,
                    'vehicles': Vehicle.objects.all(),
                    'my_vehicles': Vehicle.objects.filter(owner=user_profile),
-                   'people': UserProfile.objects.all().exclude(user__username=request.user.username),
-                   'my_people': UserProfile.linked_to.through.objects.all(),
+                   'people': UserProfile.objects.all().exclude(user__username=request.user.username).exclude(
+                                                               user__in=my_people),
+                   'my_people': my_people,
                    'username': request.user.username, })
 
 
@@ -119,6 +123,11 @@ def vehicle_lov(request):
                   'vehicle_lov.html',
                   {'vehicles': Vehicle.objects.all()})
 
+
+def people_lov(request):
+    return render(request,
+                  'people_lov.html',
+                  {'people': UserProfile.objects.all()})
 
 def infridgement_lov(request):
     return render(request, 
@@ -151,7 +160,10 @@ def index(request, auth_form=None, user_form=None):
         #ribbits_buddies = Ribbit.objects.filter(user__userprofile__in=user.profile.follows.all)
         #ribbits = ribbits_self | ribbits_buddies
         my_vehicles = Vehicle.objects.filter(owner__user__username=request.user.username)
-        my_notifications = Notification.objects.filter(Q(sighting__human__user__username=request.user.username) |
+        user_profile = UserProfile.objects.get(user=request.user)
+        my_people = user_profile.linked_to.through.objects.all()
+        my_people_usernames = [person.to_userprofile.user.username for person in my_people]
+        my_notifications = Notification.objects.filter(Q(sighting__human__user__username__in=my_people_usernames) |
                                                            Q(sighting__vehicle__in=my_vehicles))
         if request.method == 'POST':
             # All POST data will contain a value for sighting
@@ -166,14 +178,24 @@ def index(request, auth_form=None, user_form=None):
                 sighting_type = '------'
             # check whether it's valid:
             if form.is_valid():
-                car = Vehicle.objects.get(registration=form.cleaned_data.get('registration'))
-                infridgement = Infridgement.objects.get(code=form.cleaned_data.get('infridgement_code'))
-                longitude = form.cleaned_data.get('longitude')
-                latitude = form.cleaned_data.get('latitude')
-                Sighting.objects.create(vehicle=car, infridgement=infridgement, longitude=longitude,
-                                        latitude=latitude, sighting_datetime=datetime.now())
-                msg = "Sucessfully registered a sighting agains vehicle registered {}".format(car.registration)
-                messages.add_message(request, messages.INFO, msg)
+                if sighting_type == 'vehicle':
+                    car = Vehicle.objects.get(registration=form.cleaned_data.get('registration'))
+                    infridgement = Infridgement.objects.get(code=form.cleaned_data.get('infridgement_code'))
+                    longitude = form.cleaned_data.get('longitude')
+                    latitude = form.cleaned_data.get('latitude')
+                    Sighting.objects.create(vehicle=car, infridgement=infridgement, longitude=longitude,
+                                            latitude=latitude, sighting_datetime=datetime.now())
+                elif sighting_type == 'human':
+                    name = form.cleaned_data.get('human_name')
+                    first_name, surname = name.split('.')
+                    human = UserProfile.objects.get(user__first_name=first_name, user__last_name=surname)
+                    infridgement = Infridgement.objects.get(code=form.cleaned_data.get('infridgement_code'))
+                    longitude = form.cleaned_data.get('longitude')
+                    latitude = form.cleaned_data.get('latitude')
+                    Sighting.objects.create(human=human, infridgement=infridgement, longitude=longitude,
+                                            latitude=latitude, sighting_datetime=datetime.now())
+                #msg = "Sucessfully registered a sighting agains vehicle registered {}".format(car.registration)
+                #messages.add_message(request, messages.INFO, msg)
         # What if the method is a get?
         else:
             sighting_type = '------'

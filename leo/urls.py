@@ -15,6 +15,7 @@ urlpatterns = patterns('',
     url(r'^vehicle_owner/$', 'leo_app.views.vehicle_owner'),
     url(r'^vehicle_lov/$', 'leo_app.views.vehicle_lov'),
     url(r'^infridgement_lov/$', 'leo_app.views.infridgement_lov'),
+    url(r'^people_lov/$', 'leo_app.views.people_lov'),
 )
 
 urlpatterns += patterns('django.contrib.staticfiles.views',

@@ -44,11 +44,12 @@ class VehicleSightingForm(forms.ModelForm):
 
 
 class HumanSightingForm(forms.ModelForm):
-    registration = forms.CharField(required=True)
-    vehicle_model = forms.CharField(required=True)
-    infridgement = forms.CharField(required=True)
+    human_name = forms.CharField(required=True)
+    human_number = forms.CharField(required=True)
     infridgement_code = forms.IntegerField(required=True)
     sighting = forms.CharField(required=True)
+    longitude = forms.DecimalField(decimal_places=4, max_digits=7)
+    latitude = forms.DecimalField(decimal_places=4, max_digits=6)
 
     class Meta:
         model = Sighting

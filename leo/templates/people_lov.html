@@ -3,15 +3,15 @@
 	<script src="{{ STATIC_URL }}jquery-1.11.3.js"></script>
 	<input type="text" id="filter" class="filter" placeholder="enter registration">
 	<ul id="UsersSelect" class="list-group" style="overflow: auto;">
-		{% for veh in vehicles %}
-			<li style="display: none;" class="list-group-item" value="115099"><a href="javascript:;" onclick="populateLov('{{veh.registration}}', '{{veh.model}}');">{{veh.model}}</a></li>
+		{% for person in people %}
+			<li style="display: none;" class="list-group-item" value="115099"><a href="javascript:;" onclick="populateLov('{{person.user.first_name}}.{{person.user.last_name}}', '{{person.mobile}}');">{{person.user.first_name}}.{{person.user.last_name}}</a></li>
 		{% endfor %}
 	</ul>
 	<script>
-		function populateLov(registration, model)
+		function populateLov(name, mobile)
 		{	
-	        window.parent.document.getElementById('registration').value = registration;
-	        window.parent.document.getElementById('vehicle_model').value = model;
+	        window.parent.document.getElementById('human_name').value = name;
+	        window.parent.document.getElementById('human_number').value = mobile;
 	        //alert(window.parent.document.getElementById('registration').value)
 	        //document.vehicle_lov_form.submit();
 	        self.parent.tb_remove();
