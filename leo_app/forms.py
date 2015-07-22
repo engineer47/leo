@@ -4,6 +4,8 @@ from django.contrib.auth.models import User
 from django import forms
 from django.utils.html import strip_tags
 from leo_app.models import Ribbit, UserProfile, Sighting
+from leo_app.custom_form_fields import SubmitButtonField
+
 
 class UserCreateForm(UserCreationForm):
     #avatar = forms.ImageField(required=False, widget=forms.widgets.ClearableFileInput(attrs={'placehoder': 'avatar'}))
@@ -84,6 +86,7 @@ class UserProfileForm(forms.ModelForm):
     last_name = forms.CharField(required=True, widget=forms.widgets.TextInput(attrs={'placeholder': 'Last Name'}))
     mobile = forms.CharField(required=False, widget=forms.widgets.TextInput(attrs={'placeholder': 'mobile number'}))
     username = forms.CharField(widget=forms.widgets.TextInput(attrs={'placeholder': 'Username'}))
+    submit_button = SubmitButtonField(label='Save', initial="Save")
 #     password1 = forms.CharField(widget=forms.widgets.PasswordInput(attrs={'placeholder': 'Password'}))
 #     password2 = forms.CharField(widget=forms.widgets.PasswordInput(attrs={'placeholder': 'Password Confirmation'}))
 
@@ -119,6 +122,7 @@ class UserProfileForm(forms.ModelForm):
             pass
 
         return avatar
+
 
     class Meta:
         fields = ['email', 'username', 'first_name', 'last_name']

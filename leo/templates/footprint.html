@@ -20,30 +20,24 @@
 			            	  		<option value="------">------</option>
 			            	  	</select>
 		            	  	</td>
-		            	  	<td>
-	            				<input type="submit" value="Refresh">
-		            	  	</td>
-		        		</tr>
-		        		<tr id="human-input">
-		        			<td>
+		        			<td id="human-input">
 		        				<a href="/registered_user_lov?keepThis=true&TB_iframe=true&height=250&width=250&modal=true" title="" class="thickbox">User</a>
 		        				<input type="text" id="another_user" name="another_user" value={{ username }} readonly>
 		        			</td>
-		        		</tr>
-		        		<tr id="vehicle-input" style="display: none;">
-		        			<td>
+		        			<td id="vehicle-input" style="display: none;">
 		            			<a href="/vehicle_lov?keepThis=true&TB_iframe=true&height=250&width=250&modal=true" title="" class="thickbox">Registration</a>
 		            			<input type="text" id="registration" name="registration" value="">
 		            		</td>
-		            		<td>
+		            		<td id="vehicle-input" style="display: none;">
 		            			Model: <input type="text" id="vehicle_model" name="vehicle_model" value="">
 		            		</td>
-		        		</tr>
-		        		<tr id="infra-input" style="display: none;"">
-		        			<td>
+		        			<td id="infra-input" style="display: none;"">
 		        				<a href="/registered_user_lov?keepThis=true&TB_iframe=true&height=250&width=250&modal=true" title="" class="thickbox">Infrastructure</a>
 		        				<input type="text" id="another_user" name="another_user" value="" readonly>
 		        			</td>
+		        			<td>
+	            				<input type="submit" value="Refresh">
+		            	  	</td>
 		        		</tr>
 		        	</table>
 	        	</form>

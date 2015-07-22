@@ -5,14 +5,9 @@
      	{% csrf_token %}
 	    <div class="panel left">
 	        <h1>User Profile</h1>
-	        <p>
-	            <tr>
-					{{form}}
-				</tr>
-				<tr>
-	            	<input type="submit" value="Save">
-	            </tr>
-	        </p>
+            <table>
+				{{form.as_table}}
+	        </table>
 	    </div>
 		<div class="panel right" id="vehicles_div">
 	        <div class="my-notifications">
